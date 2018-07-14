@@ -1,0 +1,55 @@
+div.pie {
+    /*text-align: center;*/
+}
+div.pie > svg {
+    display: inline-block;
+    max-height: 300px;
+    max-width: 300px;
+    width: 20vw;
+    height: 20vw;
+}
+
+div.pie > div {
+    text-align: left;
+    display: inline-block;
+}
+
+
+#jolokia {
+}
+
+#jolokia > #closed {
+    margin: 0em;
+    padding: 0em;
+    background-color: white;
+}
+
+#jolokia > #closed > div {
+    margin: .5em;
+    background-color: lightgray;
+    padding: .5em;
+}
+#jolokia > #closed > div > table {
+    display: none;
+}
+
+#jolokia > div {
+    margin: .5em;
+    background-color: lightgray;
+    padding: .5em;
+    display: inline-block;
+    float: left;
+}
+
+#jolokia > div > table {
+    background-color: white;
+}
+
+#jolokia > div > table td {
+    background-color: lightgrey;
+    margin: .1em;
+    padding: .05em;
+    width: 15em;
+    overflow: hidden;
+}
+
