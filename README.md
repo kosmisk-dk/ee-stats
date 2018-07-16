@@ -1,3 +1,5 @@
+Appropriated from https://github.com/kosmisk-dk/ee-stats with permission of original author by original author
+
 # EE-Stats
 
 An EJB to depend on in a ee-project, that supplies:
@@ -32,7 +34,7 @@ Simple bean invocations
         @GET
         @Path("now")
         @Produces(MediaType.TEXT_PLAIN)
-        @dk.kosmisk.ee.stats.Timed // @Metered or @Counted
+        @dk.dbc.ee.stats.Timed // @Metered or @Counted
         public String now() {
             return Instant.now().toString();
         }
@@ -71,7 +73,7 @@ in `pom.xml`
         ...
 
         <dependency>
-            <groupId>dk.kosmisk</groupId>
+            <groupId>dk.dbc</groupId>
             <artifactId>ee-stats</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
