@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DBC A/S (http://dbc.dk/)
+ * Copyright (C) 2018 Source (source (at) kosmisk.dk)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,31 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dbc.ee.stats;
+package dk.kosmisk.ee.test;
 
-import javax.annotation.Priority;
-import javax.inject.Inject;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.AroundTimeout;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import dk.kosmisk.ee.stats.Timed;
+import javax.ejb.Stateless;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  *
- * @author Source (source (at) dbc.dk)
+ * @author Source (source (at) kosmisk.dk)
  */
-@Interceptor
-@Priority(Interceptor.Priority.LIBRARY_BEFORE + 10)
-@Metered
-public class InterceptorForMeter {
+@Stateless
+@Path("status")
+public class EndPoint {
 
-    @Inject
-    MetricReporter reporter;
-
-    @AroundInvoke
-    @AroundTimeout
-    public Object aroundInvoke(InvocationContext ic) throws Exception {
-        return reporter.invoke(ic.getMethod(), ic);
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Timed
+    public Response status() {
+        return Response.ok("{\"ok\":true}", MediaType.APPLICATION_JSON_TYPE).build();
     }
-
 }

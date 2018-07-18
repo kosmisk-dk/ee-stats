@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DBC A/S (http://dbc.dk/)
+ * Copyright (C) 2018 Source (source (at) kosmisk.dk)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,24 +14,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dbc.ee.stats;
+package dk.kosmisk.ee.stats;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import javax.interceptor.InterceptorBinding;
+import javax.annotation.Priority;
+import javax.inject.Inject;
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.AroundTimeout;
+import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
 
 /**
  *
- * @author Source (source (at) dbc.dk)
+ * @author Source (source (at) kosmisk.dk)
  */
-@Inherited
-@InterceptorBinding
-@Target({ElementType.METHOD, ElementType.TYPE, ElementType.CONSTRUCTOR})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Metered {
+@Interceptor
+@Priority(Interceptor.Priority.LIBRARY_BEFORE + 10)
+@Counted
+public class InterceptorForCount {
 
-    String value() default "";
+    @Inject
+    MetricReporter reporter;
+
+    @AroundInvoke
+    @AroundTimeout
+    public Object aroundInvoke(InvocationContext ic) throws Exception {
+        return reporter.invoke(ic.getMethod(), ic);
+    }
+
 }

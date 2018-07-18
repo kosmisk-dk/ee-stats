@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DBC A/S (http://dbc.dk/)
+ * Copyright (C) 2018 Source (source (at) kosmisk.dk)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,41 +14,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.dbc.ee.stats;
+package dk.kosmisk.ee.stats;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.annotation.Priority;
 import javax.inject.Inject;
-import javax.interceptor.AroundConstruct;
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.AroundTimeout;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
 /**
  *
- * @author Source (source (at) dbc.dk)
+ * @author Source (source (at) kosmisk.dk)
  */
 @Interceptor
 @Priority(Interceptor.Priority.LIBRARY_BEFORE + 10)
-@LifeCycleMetric
-public class InterceptorForMetricLifeCycle {
+@Metered
+public class InterceptorForMeter {
 
     @Inject
     MetricReporter reporter;
 
-    @AroundConstruct
-    public Object aroundConstruct(InvocationContext ic) throws Exception {
-        return reporter.invoke(ic.getConstructor(), ic);
-    }
-
-    @PostConstruct
-    public void aroundPostConstruct(InvocationContext ic) throws Exception {
-        reporter.invoke(ic.getMethod(), ic);
-    }
-
-    @PreDestroy
-    public void aroundPreDestroy(InvocationContext ic) throws Exception {
-        reporter.invoke(ic.getMethod(), ic);
+    @AroundInvoke
+    @AroundTimeout
+    public Object aroundInvoke(InvocationContext ic) throws Exception {
+        return reporter.invoke(ic.getMethod(), ic);
     }
 
 }

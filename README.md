@@ -34,7 +34,7 @@ Simple bean invocations
         @GET
         @Path("now")
         @Produces(MediaType.TEXT_PLAIN)
-        @dk.dbc.ee.stats.Timed // @Metered or @Counted
+        @dk.kosmisk.ee.stats.Timed // @Metered or @Counted
         public String now() {
             return Instant.now().toString();
         }
@@ -83,7 +83,7 @@ in `pom.xml`
         ...
 
         <dependency>
-            <groupId>dk.dbc</groupId>
+            <groupId>dk.kosmisk</groupId>
             <artifactId>ee-stats</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
