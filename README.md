@@ -1,3 +1,5 @@
+Appropriated from https://github.com/kosmisk-dk/ee-stats with permission of original author by original author
+
 # EE-Stats
 
 An EJB to depend on in a ee-project, that supplies:
@@ -58,6 +60,16 @@ One workaround is, Make a bean with business logic, and invoke the methods
 needed to accomplish the task, this way you can measure which part of the
 process that takes time.
 
+# @Inject
+
+You can inject:
+ 1. MetricRegistry
+ 1. Counter
+ 1. Meter
+ 1. Timer
+
+Counter/Meter/Timer gets fully qualified name as JMX metric name unless annotated
+with `@ExposeAs("name")`.
 
 # Example application in example
 

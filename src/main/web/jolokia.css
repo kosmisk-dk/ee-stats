@@ -1,7 +1,6 @@
-div.pie {
-    /*text-align: center;*/
+#pie {
 }
-div.pie > svg {
+#pie > svg {
     display: inline-block;
     max-height: 300px;
     max-width: 300px;
@@ -9,12 +8,15 @@ div.pie > svg {
     height: 20vw;
 }
 
-div.pie > div {
+#pie > div {
     text-align: left;
     display: inline-block;
+    vertical-align: top;
+    text-shadow: 1px 1px 0px darkgrey; 
 }
-
-
+#pie select {
+    border: none;
+}
 #jolokia {
 }
 
