@@ -1,5 +1,3 @@
-Appropriated from https://github.com/kosmisk-dk/ee-stats with permission of original author by original author
-
 # EE-Stats
 
 An EJB to depend on in a ee-project, that supplies:
