@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Source (source (at) kosmisk.dk)
+ * Copyright (C) 2018 DBC A/S (http://dbc.dk/)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dk.kosmisk.ee.stats;
+package dk.dbc.ee.stats;
 
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Meter;
@@ -24,6 +24,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import javax.annotation.PostConstruct;
@@ -41,17 +42,20 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import javax.enterprise.inject.spi.ProcessInjectionPoint;
 import javax.enterprise.inject.spi.WithAnnotations;
 import javax.interceptor.InvocationContext;
 
 /**
  *
- * @author Source (source (at) kosmisk.dk)
+ * @author Source (source (at) dbc.dk)
  */
 class StatsExtension implements Extension {
 
-    private static final HashMap<Executable, String> mappedNames = new HashMap<>();
+    private final HashMap<Executable, String> mappedNames = new HashMap<>();
+    private final HashSet<InjectionPoint> injectionPoints = new HashSet<>();
 
     private void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd) {
         bbd.addInterceptorBinding(Counted.class);
@@ -66,8 +70,19 @@ class StatsExtension implements Extension {
         }
     }
 
-    private <T> void processAnnotatedType(@Observes @WithAnnotations({
-        LifeCycleMetric.class, Counted.class, Metered.class, Timed.class}) ProcessAnnotatedType<T> processAnnotatedType) {
+    private <T> void processInjectionPointCounter(@Observes ProcessInjectionPoint<?, Counter> processInjectionPoint) {
+        injectionPoints.add(processInjectionPoint.getInjectionPoint());
+    }
+
+    private <T> void processInjectionPointMeter(@Observes ProcessInjectionPoint<?, Meter> processInjectionPoint) {
+        injectionPoints.add(processInjectionPoint.getInjectionPoint());
+    }
+
+    private <T> void processInjectionPointTimer(@Observes ProcessInjectionPoint<?, Timer> processInjectionPoint) {
+        injectionPoints.add(processInjectionPoint.getInjectionPoint());
+    }
+
+    private <T> void processAnnotatedType(@Observes @WithAnnotations({LifeCycleMetric.class, Counted.class, Metered.class, Timed.class}) ProcessAnnotatedType<T> processAnnotatedType) {
         AnnotatedType<T> type = processAnnotatedType.getAnnotatedType();
         Class<T> annotatedClass = type.getJavaClass();
         if (annotatedClass.equals(InterceptorForMetricLifeCycle.class) ||
@@ -157,6 +172,22 @@ class StatsExtension implements Extension {
             }
         }
         mappedNames.clear();
+
+        for (InjectionPoint ip : injectionPoints) {
+            if (Counter.class.equals(ip.getType())) {
+                String name = MetricProvider.makeName(ip);
+                registry.counter(name);
+            }
+            if (Meter.class.equals(ip.getType())) {
+                String name = MetricProvider.makeName(ip);
+                registry.meter(name);
+            }
+            if (Timer.class.equals(ip.getType())) {
+                String name = MetricProvider.makeName(ip);
+                registry.timer(name);
+            }
+        }
+        injectionPoints.clear();
     }
 
     private static String name(Method method) {
