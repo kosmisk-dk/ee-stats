@@ -16,21 +16,15 @@
  */
 package dk.kosmisk.ee.stats;
 
-import com.codahale.metrics.Counter;
 import com.codahale.metrics.JmxReporter;
-import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.Metric;
-import com.codahale.metrics.Timer;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
-import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.ejb.Lock;
+import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
@@ -42,6 +36,7 @@ import javax.interceptor.InvocationContext;
  */
 @Singleton
 @Startup
+@Lock(LockType.READ)
 public class MetricReporter {
 
     @Inject
