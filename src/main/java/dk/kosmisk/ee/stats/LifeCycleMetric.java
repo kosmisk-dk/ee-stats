@@ -32,6 +32,4 @@ import javax.interceptor.InterceptorBinding;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LifeCycleMetric {
-
-//    String value() default "";
 }
